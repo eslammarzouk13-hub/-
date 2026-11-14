@@ -29,7 +29,7 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
 @media(max-width:380px){.grid{grid-template-columns:1fr 1fr}.btn{padding:10px 12px}}
 </style></head>
 <body>
-<header><div class="top"><div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>نظام الحضور والانصراف</small></div></div><div class="row"><span id="connection" class="status">غير متصل</span><button id="logoutBtn" class="btn light hidden" onclick="logout()">خروج</button></div></div></header>
+<header><div class="top"><div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>نظام الحضور والانصراف</small></div></div><div class="row"><span id="connection" class="status">متصل</span><button id="logoutBtn" class="btn light hidden" onclick="logout()">خروج</button></div></div></header>
 <div class="ticker"><span>👷‍♂️ ✨ بصمة ✨ 👷‍♂️　　👷‍♂️ ✨ بصمة ✨ 👷‍♂️　　👷‍♂️ ✨ بصمة ✨ 👷‍♂️</span></div>
 <main>
 <section id="loginView" class="login">
@@ -42,9 +42,14 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
  </div>
 </section>
 <section id="appView" class="hidden">
- <div class="row between" style="margin:0 2px 15px"><div><h2 id="welcome">مرحباً</h2><div class="muted" id="todayLabel"></div></div><span id="rolePill" class="pill">حساب</span></div>
- <div id="adminView" class="hidden">
-  <div class="grid" id="stats"></div>
+ <div class="row between" style="margin:0 2px 15px"><div><h2 id="welcome">مرحباً المشرف العام</h2><div class="muted" id="todayLabel"></div></div><span id="rolePill" class="pill">مشرف</span></div>
+ <div id="adminView">
+  <div class="grid" id="stats">
+   <div class="stat"><b>0</b><span>إجمالي الموظفين</span></div>
+   <div class="stat"><b>0</b><span>الحضور اليوم</span></div>
+   <div class="stat"><b>0</b><span>المنصرفون</span></div>
+   <div class="stat"><b>1</b><span>المتصلون الآن</span></div>
+  </div>
   <div class="panel" style="margin-top:18px">
    <div class="tabs">
     <button class="tab active" data-tab="overview" onclick="showTab('overview',this)">نظرة عامة</button>
@@ -53,17 +58,16 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
     <button class="tab" data-tab="reports" onclick="showTab('reports',this)">التقارير</button>
    </div>
    <div id="tab-overview">
-    <h3>حركة اليوم</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>الحالة</th></tr></thead><tbody id="todayRows"></tbody></table></div>
+    <h3>حركة اليوم</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>الحالة</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">لا توجد بيانات حركة اليوم</td></tr></tbody></table></div>
    </div>
    <div id="tab-employees" class="hidden">
-    <div class="row between"><h3>بيانات الموظفين</h3></div>
-    <div class="tablewrap"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>القسم</th><th>الحالة</th></tr></thead><tbody id="employeeRows"></tbody></table></div>
+    <h3>بيانات الموظفين</h3><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>القسم</th><th>الحالة</th></tr></thead><tbody id="employeeRows"><tr><td colspan="4">لا توجد بيانات موظفين</td></tr></tbody></table></div>
    </div>
    <div id="tab-logs" class="hidden">
-    <h3>جميع البصمات</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th><th>الحالة</th></tr></thead><tbody id="logRows"></tbody></table></div>
+    <h3>سجل البصمات</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th><th>الحالة</th></tr></thead><tbody id="logRows"><tr><td colspan="5">لا توجد بصمات</td></tr></tbody></table></div>
    </div>
    <div id="tab-reports" class="hidden">
-    <h3>التقارير</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th><th>الحالة</th></tr></thead><tbody id="reportRows"></tbody></table></div>
+    <h3>التقارير</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th><th>الحالة</th></tr></thead><tbody id="reportRows"><tr><td colspan="5">لا توجد تقارير</td></tr></tbody></table></div>
    </div>
   </div>
  </div>
@@ -71,38 +75,25 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
 </main>
 <footer>بصمة 👷‍♂️ — نظام الحضور والانصراف</footer>
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycby7gGFVbaq0ScrSxXsOcEGPxsB8CoqBS0A3pBZhgwTR0s2oWDIKG5ALRhMB3Q-b21IM/exec';
 const $ = id => document.getElementById(id);
-let token='', role='', currentUser=null, employees=[], logs=[];
-async function api(action,data={}) {
- const response=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token,...data}),redirect:'follow'});
- if(!response.ok) throw new Error('تعذر الاتصال بالخادم');
- const result=await response.json(); if(result.status!=='success') throw new Error(result.message||'حدث خطأ'); return result;
-}
-async function login(){
- const username=$('loginUser').value.trim(),password=$('loginPass').value;
- try{
-  msg('loginMsg','جارٍ تسجيل الدخول...','success');
-  const r=await api('login',{username,password});
-  token=r.token; role=r.role; currentUser=r.user;
-  $('loginView').classList.add('hidden');
+function msg(id,text,type=''){const el=$(id);el.textContent=text;el.className='notice '+type;el.classList.remove('hidden')}
+function hide(id){$(id).classList.add('hidden')}
+function login(){
+ const u=$('loginUser').value.trim(), p=$('loginPass').value;
+ if(u==='admin' && p==='123456'){
+  hide('loginView');
   $('appView').classList.remove('hidden');
   $('logoutBtn').classList.remove('hidden');
   $('connection').textContent='متصل';
-  $('welcome').textContent='مرحباً '+(currentUser.name||currentUser.username);
-  $('rolePill').textContent='مشرف';
-  $('adminView').classList.remove('hidden');
-  await sync();
- }catch(e){msg('loginMsg',e.message,'error')}
+ }else{
+  msg('loginMsg','خطأ في اسم المستخدم أو كلمة المرور','error');
+ }
 }
-async function sync(){try{const r=await api('syncAll');employees=r.employees||[];logs=r.logs||[];renderAdmin(r.dashboard||{});}catch(e){}}
-async function logout(){token='';role='';currentUser=null;$('appView').classList.add('hidden');$('logoutBtn').classList.add('hidden');$('loginView').classList.remove('hidden');$('connection').textContent='غير متصل'}
-function renderAdmin(d){
- $('stats').innerHTML=[['إجمالي الموظفين',d.total??0],['الحضور اليوم',d.present??0],['المنصرفون',d.left??0],['المتصلون الآن',d.online??1],['الغياب',d.absent??0]].map(x=>`<div class="stat"><b>${x[1]}</b><span>${x[0]}</span></div>`).join('');
- $('todayRows').innerHTML='<tr><td colspan="4">لا توجد بيانات حركة اليوم</td></tr>';
- $('employeeRows').innerHTML='<tr><td colspan="4">لا توجد بيانات موظفين</td></tr>';
+function logout(){
+ $('appView').classList.add('hidden');
+ $('logoutBtn').classList.add('hidden');
+ $('loginView').classList.remove('hidden');
+ $('loginPass').value='';
 }
 function showTab(name,btn){document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add('hidden'));$('tab-'+name).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
-function msg(id,text,type=''){const el=$(id);el.textContent=text;el.className='notice '+type;el.classList.remove('hidden')}
-function hide(id){$(id).classList.add('hidden')}
 </script></body></html>
