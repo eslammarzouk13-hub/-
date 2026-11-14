@@ -36,25 +36,28 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
  </div>
 </header>
 <main>
+ <!-- شاشة تسجيل الدخول الآمنة (فارغة تماماً وخالية من أي بيانات) -->
  <section id="loginView" class="login">
   <div class="panel">
    <div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>تسجيل الدخول</small></div></div>
    <div class="field" style="margin-bottom:12px"><label>اسم المستخدم</label><input id="loginUser" placeholder="أدخل اسم المستخدم"></div>
-   <div class="field" style="margin-bottom:12px"><label>كلمة المرور / كود الدخول</label><input id="loginPass" type="password" placeholder="أدخل كلمة المرور"></div>
-   <button class="btn primary" style="width:100%" onclick="login()">تسجيل الدخول</button>
+   <div class="field" style="margin-bottom:12px"><label>كلمة المرور / كود الدخول</label><input id="loginPass" type="password" placeholder="أدخل كود الدخول أو كلمة المرور"></div>
+   <button class="btn primary" style="width:100%" onclick="login()">دخول النظام</button>
    <div id="loginMsg" class="notice hidden"></div>
   </div>
  </section>
- <section id="appView" class="hidden">
+
+ <!-- لوحة تحكم المشرف -->
+ <section id="adminView" class="hidden">
   <div class="row between" style="margin:0 2px 15px">
-   <div><h2 id="welcome">مرحباً المشرف العام</h2><div class="muted">لوحة الإدارة الرئيسية</div></div>
+   <div><h2 id="welcomeAdmin">مرحباً المشرف العام</h2><div class="muted">لوحة الإدارة الرئيسية</div></div>
    <span class="pill" style="background:#dcebe1;color:#286344;padding:6px 12px;border-radius:99px">مشرف النظام</span>
   </div>
   <div class="grid">
    <div class="stat"><b id="statTotal">0</b><span>إجمالي الموظفين</span></div>
    <div class="stat"><b id="statPresent">0</b><span>الحضور اليوم</span></div>
    <div class="stat"><b id="statLeft">0</b><span>المنصرفون</span></div>
-   <div class="stat"><b id="statOnline">1</b><span>المتصلون الآن</span></div>
+   <div class="stat"><b>1</b><span>المتصلون الآن</span></div>
   </div>
   <div class="panel" style="margin-top:18px">
    <div class="tabs">
@@ -76,46 +79,82 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
    </div>
   </div>
  </section>
+
+ <!-- واجهة الموظف/المندوب الخاصة -->
+ <section id="employeeView" class="hidden">
+  <div class="panel" style="max-width:500px;margin:5vh auto;text-align:center">
+   <h2 id="welcomeEmp">مرحباً بالمندوب</h2>
+   <div class="muted" style="margin-bottom:20px">سجل حضورك أو انصرافك بضغطة زر واحدة</div>
+   <div class="row" style="justify-content:center;gap:15px">
+    <button class="btn green" style="padding:15px 30px;font-size:16px" onclick="doPunch('حضور')">تسجيل الحضور</button>
+    <button class="btn danger" style="padding:15px 30px;font-size:16px" onclick="doPunch('انصراف')">تسجيل الانصراف</button>
+   </div>
+   <div id="empMsg" class="notice hidden" style="margin-top:20px"></div>
+  </div>
+ </section>
 </main>
+
 <div id="empModal" class="modalback hidden">
  <div class="modal">
-  <h2>إضافة موظف جديد</h2>
+  <h2>إضافة موظف / مندوب جديد</h2>
   <div class="field" style="margin-bottom:10px"><label>اسم الموظف</label><input id="newEmpName" placeholder="الاسم الكامل"></div>
-  <div class="field" style="margin-bottom:10px"><label>اسم المستخدم</label><input id="newEmpUser" placeholder="مثال: ahmed"></div>
-  <div class="field" style="margin-bottom:15px"><label>كود الدخول (4 أرقام/حروف)</label><input id="newEmpCode" maxlength="4" placeholder="مثال: 1234"></div>
+  <div class="field" style="margin-bottom:10px"><label>اسم المستخدم (للدخول)</label><input id="newEmpUser" placeholder="مثال: ali"></div>
+  <div class="field" style="margin-bottom:15px"><label>كود الدخول (كلمة المرور)</label><input id="newEmpCode" placeholder="مثال: 4321"></div>
   <div class="row"><button class="btn primary" onclick="saveEmployee()">حفظ الموظف</button><button class="btn light" onclick="closeEmpModal()">إلغاء</button></div>
-  <div id="modalMsg" class="notice hidden" style="margin-top:10px"></div>
  </div>
 </div>
+
 <footer>بصمة 👷‍♂️ — نظام الحضور والانصراف</footer>
 <script>
 const $ = id => document.getElementById(id);
 let employees = JSON.parse(localStorage.getItem('basma_emps') || '[]');
 let logs = JSON.parse(localStorage.getItem('basma_logs') || '[]');
+let currentEmp = null;
 
 function login(){
  const u=$('loginUser').value.trim(), p=$('loginPass').value.trim();
+ if(!u || !p){ alert('الرجاء إدخال البيانات'); return; }
+
+ // فحص حساب المشرف
  if(u==='admin' && p==='123456'){
   $('loginView').classList.add('hidden');
-  $('appView').classList.remove('hidden');
+  $('adminView').classList.remove('hidden');
   $('logoutBtn').classList.remove('hidden');
-  renderData();
- } else {
-  const m = $('loginMsg'); m.textContent='خطأ في اسم المستخدم أو كلمة المرور'; m.className='notice error'; m.classList.remove('hidden');
+  renderAdminData();
+  return;
  }
+
+ // فحص حسابات الموظفين المضافين
+ const emp = employees.find(e => e.username === u && e.code === p);
+ if(emp){
+  currentEmp = emp;
+  $('loginView').classList.add('hidden');
+  $('employeeView').classList.remove('hidden');
+  $('logoutBtn').classList.remove('hidden');
+  $('welcomeEmp').textContent = 'مرحباً بالزميل: ' + emp.name;
+  return;
+ }
+
+ const m = $('loginMsg'); m.textContent='خطأ في اسم المستخدم أو كلمة المرور'; m.className='notice error'; m.classList.remove('hidden');
 }
+
 function logout(){
- $('appView').classList.add('hidden');
+ $('adminView').classList.add('hidden');
+ $('employeeView').classList.add('hidden');
  $('logoutBtn').classList.add('hidden');
  $('loginView').classList.remove('hidden');
  $('loginUser').value=''; $('loginPass').value='';
+ hide('loginMsg');
+ currentEmp = null;
 }
+
 function showTab(name,btn){
  document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add('hidden'));
  $('tab-'+name).classList.remove('hidden');
  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
  btn.classList.add('active');
 }
+
 function openEmpModal(){ $('newEmpName').value=''; $('newEmpUser').value=''; $('newEmpCode').value=''; $('empModal').classList.remove('hidden'); }
 function closeEmpModal(){ $('empModal').classList.add('hidden'); }
 
@@ -127,19 +166,57 @@ function saveEmployee(){
  employees.push({name, username, code});
  localStorage.setItem('basma_emps', JSON.stringify(employees));
  closeEmpModal();
- renderData();
+ renderAdminData();
 }
+
 function deleteEmp(index){
  if(confirm('هل أنت متأكد من حذف الموظف؟')){
   employees.splice(index, 1);
   localStorage.setItem('basma_emps', JSON.stringify(employees));
-  renderData();
+  renderAdminData();
  }
 }
-function renderData(){
+
+function doPunch(type){
+ const now = new Date();
+ const dateStr = now.toLocaleDateString('en-CA');
+ const timeStr = now.toLocaleTimeString('en-GB');
+ logs.unshift({name: currentEmp.name, type, date: dateStr, time: timeStr});
+ localStorage.setItem('basma_logs', JSON.stringify(logs));
+ 
+ const msgEl = $('empMsg');
+ msgEl.textContent = 'تم تسجيل (' + type + ') بنجاح في تمام الساعة ' + timeStr;
+ msgEl.className = 'notice success';
+ msgEl.classList.remove('hidden');
+}
+
+function renderAdminData(){
  $('statTotal').textContent = employees.length;
  $('employeeRows').innerHTML = employees.length ? employees.map((e,i)=>`<tr><td>${e.name}</td><td>${e.username}</td><td>****</td><td><button class="btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteEmp(${i})">حذف</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد موظفين مضافين</td></tr>';
+ 
+ const today = new Date().toLocaleDateString('en-CA');
+ const todayLogs = logs.filter(l => l.date === today);
+ $('statPresent').textContent = new Set(todayLogs.filter(l=>l.type==='حضور').map(l=>l.name)).size;
+ $('statLeft').textContent = new Set(todayLogs.filter(l=>l.type==='انصراف').map(l=>l.name)).size;
+
  $('logRows').innerHTML = logs.length ? logs.map(l=>`<tr><td>${l.name}</td><td>${l.type}</td><td>${l.date}</td><td>${l.time}</td></tr>`).join('') : '<tr><td colspan="4">لا توجد بصمات مسجلة</td></tr>';
+ 
+ const byEmp = {};
+ todayLogs.forEach(l => {
+  byEmp[l.name] = byEmp[l.name] || {in:'—', out:'—'};
+  if(l.type==='حضور') byEmp[l.name].in = l.time;
+  if(l.type==='انصراف') byEmp[l.name].out = l.time;
+ });
+ 
+ $('todayRows').innerHTML = employees.length ? employees.map(e => {
+  const st = byEmp[e.name];
+  const hasIn = st && st.in !== '—';
+  const hasOut = st && st.out !== '—';
+  let badge = '<span style="color:#777">غائب</span>';
+  if(hasIn && !hasOut) badge = '<span style="color:var(--green);font-weight:bold">حاضر الآن</span>';
+  else if(hasOut) badge = '<span style="color:var(--muted)">انصرف</span>';
+  return `<tr><td>${e.name}</td><td>${st?st.in:'—'}</td><td>${st?st.out:'—'}</td><td>${badge}</td></tr>`;
+ }).join('') : '<tr><td colspan="4">لا توجد بيانات موظفين</td></tr>';
 }
 </script>
 </body>
