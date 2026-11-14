@@ -4,96 +4,143 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#b8aa96"><title>بصمة | الحضور والانصراف</title>
 <style>
-:root{--sand:#c9bba7;--sand2:#e8dfd3;--paper:#f7f4ef;--ink:#393936;--muted:#77736d;--line:#ddd5ca;--gray:#65645f;--green:#387b59;--red:#a84f49;--shadow:0 12px 35px #4b403018}
+:root{--sand:#c9bba7;--paper:#f7f4ef;--ink:#393936;--muted:#77736d;--line:#ddd5ca;--green:#387b59;--red:#a84f49;--shadow:0 12px 35px #4b403018}
 *{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#eee8df,#d7d1c8);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh}
-button,input,select{font:inherit}button{cursor:pointer;border:0} .hidden{display:none!important}
+button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
 header{position:sticky;top:0;z-index:5;background:#d4c8b8ed;backdrop-filter:blur(12px);border-bottom:1px solid #ffffff70}
 .top{max-width:1200px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}.logo{width:46px;height:46px;border-radius:15px;background:#f8f4ed;display:grid;place-items:center;font-size:25px;box-shadow:var(--shadow)}.brand h1{font-size:22px;margin:0;letter-spacing:.5px}.brand small{color:#625d56}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:46px;height:46px;border-radius:15px;background:#f8f4ed;display:grid;place-items:center;font-size:25px;box-shadow:var(--shadow)}.brand h1{font-size:22px;margin:0}
 .status{font-size:12px;color:#555;background:#f6f2ec;padding:8px 11px;border-radius:99px}
-.ticker{overflow:hidden;background:#595a58;color:#f8f2e9;white-space:nowrap;padding:8px 0;font-weight:700;letter-spacing:1px}
-.ticker span{display:inline-block;padding-right:100%;animation:slide 18s linear infinite}@keyframes slide{to{transform:translateX(100%)}}
 main{max-width:1200px;margin:24px auto;padding:0 16px 50px}.panel{background:#faf8f4;border:1px solid #fff;border-radius:22px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
-h2{margin:0 0 15px;font-size:21px}h3{margin:0 0 12px;font-size:17px}.muted{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:linear-gradient(145deg,#eee8df,#fff);border:1px solid var(--line);border-radius:17px;padding:16px}.stat b{font-size:27px;display:block}.stat span{font-size:13px;color:var(--muted)}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.field{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}.field label{font-size:13px;color:#625e58}input,select{width:100%;border:1px solid #d7cfc4;background:white;border-radius:12px;padding:12px;color:var(--ink);outline:none}input:focus,select:focus{border-color:#998873;box-shadow:0 0 0 3px #c9bba733}
-.btn{padding:11px 16px;border-radius:12px;background:#625f59;color:#fff;font-weight:650}.btn.primary{background:#8f7e68}.btn.light{background:#e8e1d7;color:#46433e}.btn.danger{background:#a84f49}.btn.green{background:#387b59}.btn:disabled{opacity:.5;cursor:not-allowed}
+h2{margin:0 0 15px;font-size:21px}h3{margin:0 0 12px;font-size:17px}.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:linear-gradient(145deg,#eee8df,#fff);border:1px solid var(--line);border-radius:17px;padding:16px}.stat b{font-size:27px;display:block}.stat span{font-size:13px;color:var(--muted)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
+input{width:100%;border:1px solid #d7cfc4;background:white;border-radius:12px;padding:12px;color:var(--ink);outline:none}
+.btn{padding:11px 16px;border-radius:12px;background:#625f59;color:#fff;font-weight:650}.btn.primary{background:#8f7e68}.btn.light{background:#e8e1d7;color:#46433e}.btn.danger{background:#a84f49}.btn.green{background:#387b59}
 .tabs{display:flex;gap:8px;overflow:auto;margin:0 0 16px}.tab{white-space:nowrap;padding:10px 14px;border-radius:12px;background:#e8e1d7;color:#504b44}.tab.active{background:#625f59;color:white}
 table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:11px 9px;border-bottom:1px solid #e7e0d7;text-align:right;font-size:13px}th{color:#6e675e;background:#f2eee8}
-.tablewrap{overflow:auto;border:1px solid #e7e0d7;border-radius:14px}.pill{display:inline-block;border-radius:99px;padding:5px 9px;font-size:11px;background:#e8e1d7}.pill.ok{background:#dcebe1;color:#286344}.pill.bad{background:#f4dfdc;color:#8b3934}.pill.warn{background:#f5ebd5;color:#876528}
-.login{max-width:440px;margin:8vh auto}.login .panel{padding:26px}.login .brand{justify-content:center;margin-bottom:20px}.login .brand h1{font-size:27px}
+.tablewrap{overflow:auto;border:1px solid #e7e0d7;border-radius:14px}
+.login{max-width:440px;margin:8vh auto}.login .panel{padding:26px}.login .brand{justify-content:center;margin-bottom:20px}
 .notice{padding:12px 14px;border-radius:12px;background:#f0e9df;color:#62584c;font-size:13px;margin:10px 0}.error{background:#f7e5e2;color:#8c3d36}.success{background:#e1eee5;color:#2e6545}
-.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:7px 10px;font-size:12px;border-radius:9px}
-.modalback{position:fixed;inset:0;background:#1e1e1ecc;z-index:20;display:grid;place-items:center;padding:15px}.modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:#faf8f4;border-radius:20px;padding:20px}
+.modalback{position:fixed;inset:0;background:#1e1e1ecc;z-index:20;display:grid;place-items:center;padding:15px}
+.modal{width:min(560px,100%);background:#faf8f4;border-radius:20px;padding:20px}
 footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
-@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:15px;border-radius:18px}.top{padding:10px 13px}.status{font-size:11px}.brand h1{font-size:19px}.login{margin:5vh auto}}
-@media(max-width:380px){.grid{grid-template-columns:1fr 1fr}.btn{padding:10px 12px}}
-</style></head>
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
 <body>
-<header><div class="top"><div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>نظام الحضور والانصراف</small></div></div><div class="row"><span id="connection" class="status">متصل</span><button id="logoutBtn" class="btn light hidden" onclick="logout()">خروج</button></div></div></header>
-<div class="ticker"><span>👷‍♂️ ✨ بصمة ✨ 👷‍♂️　　👷‍♂️ ✨ بصمة ✨ 👷‍♂️　　👷‍♂️ ✨ بصمة ✨ 👷‍♂️</span></div>
-<main>
-<section id="loginView" class="login">
- <div class="panel"><div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>أهلاً بك في نظام الحضور</small></div></div>
- <div class="notice">بيانات الدخول الافتراضية للمشرف: اسم المستخدم <b>admin</b> وكلمة المرور <b>123456</b></div>
- <div class="field"><label>اسم المستخدم</label><input id="loginUser" autocomplete="username" placeholder="اسم المستخدم" value="admin"></div>
- <div class="field" style="margin-top:12px"><label>كود الدخول</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="كود الدخول" value="123456"></div>
- <button class="btn primary" style="width:100%;margin-top:17px" onclick="login()">تسجيل الدخول</button><div id="loginMsg" class="notice hidden"></div>
- <p class="muted" style="text-align:center">بيانات الدخول سرية ولا تُعرض في الصفحة.</p>
+<header>
+ <div class="top">
+  <div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>نظام الحضور والانصراف</small></div></div>
+  <div class="row"><span id="connection" class="status">متصل</span><button id="logoutBtn" class="btn light hidden" onclick="logout()">خروج</button></div>
  </div>
-</section>
-<section id="appView" class="hidden">
- <div class="row between" style="margin:0 2px 15px"><div><h2 id="welcome">مرحباً المشرف العام</h2><div class="muted" id="todayLabel"></div></div><span id="rolePill" class="pill">مشرف</span></div>
- <div id="adminView">
-  <div class="grid" id="stats">
-   <div class="stat"><b>0</b><span>إجمالي الموظفين</span></div>
-   <div class="stat"><b>0</b><span>الحضور اليوم</span></div>
-   <div class="stat"><b>0</b><span>المنصرفون</span></div>
-   <div class="stat"><b>1</b><span>المتصلون الآن</span></div>
+</header>
+<main>
+ <section id="loginView" class="login">
+  <div class="panel">
+   <div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>تسجيل الدخول</small></div></div>
+   <div class="field" style="margin-bottom:12px"><label>اسم المستخدم</label><input id="loginUser" placeholder="أدخل اسم المستخدم"></div>
+   <div class="field" style="margin-bottom:12px"><label>كلمة المرور / كود الدخول</label><input id="loginPass" type="password" placeholder="أدخل كلمة المرور"></div>
+   <button class="btn primary" style="width:100%" onclick="login()">تسجيل الدخول</button>
+   <div id="loginMsg" class="notice hidden"></div>
+  </div>
+ </section>
+ <section id="appView" class="hidden">
+  <div class="row between" style="margin:0 2px 15px">
+   <div><h2 id="welcome">مرحباً المشرف العام</h2><div class="muted">لوحة الإدارة الرئيسية</div></div>
+   <span class="pill" style="background:#dcebe1;color:#286344;padding:6px 12px;border-radius:99px">مشرف النظام</span>
+  </div>
+  <div class="grid">
+   <div class="stat"><b id="statTotal">0</b><span>إجمالي الموظفين</span></div>
+   <div class="stat"><b id="statPresent">0</b><span>الحضور اليوم</span></div>
+   <div class="stat"><b id="statLeft">0</b><span>المنصرفون</span></div>
+   <div class="stat"><b id="statOnline">1</b><span>المتصلون الآن</span></div>
   </div>
   <div class="panel" style="margin-top:18px">
    <div class="tabs">
     <button class="tab active" data-tab="overview" onclick="showTab('overview',this)">نظرة عامة</button>
     <button class="tab" data-tab="employees" onclick="showTab('employees',this)">الموظفون</button>
     <button class="tab" data-tab="logs" onclick="showTab('logs',this)">سجل البصمات</button>
-    <button class="tab" data-tab="reports" onclick="showTab('reports',this)">التقارير</button>
    </div>
    <div id="tab-overview">
-    <h3>حركة اليوم</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>الحالة</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">لا توجد بيانات حركة اليوم</td></tr></tbody></table></div>
+    <h3>حركة اليوم</h3>
+    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>الحالة</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">لا توجد بيانات حركة اليوم</td></tr></tbody></table></div>
    </div>
    <div id="tab-employees" class="hidden">
-    <h3>بيانات الموظفين</h3><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>القسم</th><th>الحالة</th></tr></thead><tbody id="employeeRows"><tr><td colspan="4">لا توجد بيانات موظفين</td></tr></tbody></table></div>
+    <div class="row between"><h3>بيانات الموظفين</h3><button class="btn primary" onclick="openEmpModal()">+ إضافة موظف</button></div>
+    <div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الكود</th><th>إجراءات</th></tr></thead><tbody id="employeeRows"><tr><td colspan="4">لا توجد موظفين مضافين</td></tr></tbody></table></div>
    </div>
    <div id="tab-logs" class="hidden">
-    <h3>سجل البصمات</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th><th>الحالة</th></tr></thead><tbody id="logRows"><tr><td colspan="5">لا توجد بصمات</td></tr></tbody></table></div>
-   </div>
-   <div id="tab-reports" class="hidden">
-    <h3>التقارير</h3><div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th><th>الحالة</th></tr></thead><tbody id="reportRows"><tr><td colspan="5">لا توجد تقارير</td></tr></tbody></table></div>
+    <h3>سجل البصمات المباشر</h3>
+    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th></tr></thead><tbody id="logRows"><tr><td colspan="4">لا توجد بصمات مسجلة</td></tr></tbody></table></div>
    </div>
   </div>
- </div>
-</section>
+ </section>
 </main>
+<div id="empModal" class="modalback hidden">
+ <div class="modal">
+  <h2>إضافة موظف جديد</h2>
+  <div class="field" style="margin-bottom:10px"><label>اسم الموظف</label><input id="newEmpName" placeholder="الاسم الكامل"></div>
+  <div class="field" style="margin-bottom:10px"><label>اسم المستخدم</label><input id="newEmpUser" placeholder="مثال: ahmed"></div>
+  <div class="field" style="margin-bottom:15px"><label>كود الدخول (4 أرقام/حروف)</label><input id="newEmpCode" maxlength="4" placeholder="مثال: 1234"></div>
+  <div class="row"><button class="btn primary" onclick="saveEmployee()">حفظ الموظف</button><button class="btn light" onclick="closeEmpModal()">إلغاء</button></div>
+  <div id="modalMsg" class="notice hidden" style="margin-top:10px"></div>
+ </div>
+</div>
 <footer>بصمة 👷‍♂️ — نظام الحضور والانصراف</footer>
 <script>
 const $ = id => document.getElementById(id);
-function msg(id,text,type=''){const el=$(id);el.textContent=text;el.className='notice '+type;el.classList.remove('hidden')}
-function hide(id){$(id).classList.add('hidden')}
+let employees = JSON.parse(localStorage.getItem('basma_emps') || '[]');
+let logs = JSON.parse(localStorage.getItem('basma_logs') || '[]');
+
 function login(){
- const u=$('loginUser').value.trim(), p=$('loginPass').value;
+ const u=$('loginUser').value.trim(), p=$('loginPass').value.trim();
  if(u==='admin' && p==='123456'){
-  hide('loginView');
+  $('loginView').classList.add('hidden');
   $('appView').classList.remove('hidden');
   $('logoutBtn').classList.remove('hidden');
-  $('connection').textContent='متصل';
- }else{
-  msg('loginMsg','خطأ في اسم المستخدم أو كلمة المرور','error');
+  renderData();
+ } else {
+  const m = $('loginMsg'); m.textContent='خطأ في اسم المستخدم أو كلمة المرور'; m.className='notice error'; m.classList.remove('hidden');
  }
 }
 function logout(){
  $('appView').classList.add('hidden');
  $('logoutBtn').classList.add('hidden');
  $('loginView').classList.remove('hidden');
- $('loginPass').value='';
+ $('loginUser').value=''; $('loginPass').value='';
 }
-function showTab(name,btn){document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add('hidden'));$('tab-'+name).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
-</script></body></html>
+function showTab(name,btn){
+ document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add('hidden'));
+ $('tab-'+name).classList.remove('hidden');
+ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+ btn.classList.add('active');
+}
+function openEmpModal(){ $('newEmpName').value=''; $('newEmpUser').value=''; $('newEmpCode').value=''; $('empModal').classList.remove('hidden'); }
+function closeEmpModal(){ $('empModal').classList.add('hidden'); }
+
+function saveEmployee(){
+ const name = $('newEmpName').value.trim();
+ const username = $('newEmpUser').value.trim();
+ const code = $('newEmpCode').value.trim();
+ if(!name || !username || !code){ alert('الرجاء تعبئة جميع الحقول'); return; }
+ employees.push({name, username, code});
+ localStorage.setItem('basma_emps', JSON.stringify(employees));
+ closeEmpModal();
+ renderData();
+}
+function deleteEmp(index){
+ if(confirm('هل أنت متأكد من حذف الموظف؟')){
+  employees.splice(index, 1);
+  localStorage.setItem('basma_emps', JSON.stringify(employees));
+  renderData();
+ }
+}
+function renderData(){
+ $('statTotal').textContent = employees.length;
+ $('employeeRows').innerHTML = employees.length ? employees.map((e,i)=>`<tr><td>${e.name}</td><td>${e.username}</td><td>****</td><td><button class="btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteEmp(${i})">حذف</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد موظفين مضافين</td></tr>';
+ $('logRows').innerHTML = logs.length ? logs.map(l=>`<tr><td>${l.name}</td><td>${l.type}</td><td>${l.date}</td><td>${l.time}</td></tr>`).join('') : '<tr><td colspan="4">لا توجد بصمات مسجلة</td></tr>';
+}
+</script>
+</body>
+</html>
