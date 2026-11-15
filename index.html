@@ -65,15 +65,15 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
    </div>
    <div id="tab-overview">
     <h3>حركة اليوم</h3>
-    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>الحالة</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">جاري التحميل...</td></tr></tbody></table></div>
+    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>الحالة</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">لا توجد بيانات حركة اليوم</td></tr></tbody></table></div>
    </div>
    <div id="tab-employees" class="hidden">
     <div class="row between"><h3>بيانات الموظفين</h3><button class="btn primary" onclick="openEmpModal()">+ إضافة موظف</button></div>
-    <div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الكود</th><th>إجراءات</th></tr></thead><tbody id="employeeRows"><tr><td colspan="4">جاري التحميل...</td></tr></tbody></table></div>
+    <div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الكود</th><th>إجراءات</th></tr></thead><tbody id="employeeRows"><tr><td colspan="4">لا توجد موظفين مضافين</td></tr></tbody></table></div>
    </div>
    <div id="tab-logs" class="hidden">
     <h3>سجل البصمات المباشر</h3>
-    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th></tr></thead><tbody id="logRows"><tr><td colspan="4">جاري التحميل...</td></tr></tbody></table></div>
+    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th></tr></thead><tbody id="logRows"><tr><td colspan="4">لا توجد بصمات مسجلة</td></tr></tbody></table></div>
    </div>
   </div>
  </section>
@@ -103,42 +103,24 @@ footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
 
 <footer>بصمة 👷‍♂️ — نظام الحضور والانصراف</footer>
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycby7gGFVbaq0ScrSxXsOcEGPxsB8CoqBS0A3pBZhgwTR0s2oWDIKG5ALRhMB3Q-b21IM/exec';
 const $ = id => document.getElementById(id);
-let employees = [], logs = [], currentEmp = null;
+let employees = JSON.parse(localStorage.getItem('basma_emps') || '[]');
+let logs = JSON.parse(localStorage.getItem('basma_logs') || '[]');
+let currentEmp = null;
 
-async function api(action, data={}) {
- try {
-  const res = await fetch(API_URL, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({action, ...data}), redirect: 'follow'});
-  const json = await res.json();
-  return json;
- } catch(e) {
-  return {status: 'error', message: 'تعذر الاتصال بالسيرفر'};
- }
-}
-
-async function loadDataFromCloud() {
- const r = await api('syncAll');
- if(r.status === 'success') {
-  employees = r.employees || [];
-  logs = r.logs || [];
- }
-}
-
-async function login(){
+function login(){
  const u=$('loginUser').value.trim(), p=$('loginPass').value.trim();
- if(!u || !p){ alert('الرجاء إدخال البيانات'); return; }
+ const m = $('loginMsg');
+ if(!u || !p){ m.textContent='الرجاء إدخال البيانات'; m.className='notice error'; m.classList.remove('hidden'); return; }
 
  if(u==='admin' && p==='123456'){
   $('loginView').classList.add('hidden');
   $('adminView').classList.remove('hidden');
   $('logoutBtn').classList.remove('hidden');
-  await loadDataFromCloud();
   renderAdminData();
   return;
  }
 
- await loadDataFromCloud();
  const emp = employees.find(e => e.username === u && e.code === p);
  if(emp){
   currentEmp = emp;
@@ -149,7 +131,7 @@ async function login(){
   return;
  }
 
- const m = $('loginMsg'); m.textContent='خطأ في اسم المستخدم أو كلمة المرور'; m.className='notice error'; m.classList.remove('hidden');
+ m.textContent='خطأ في اسم المستخدم أو كلمة المرور'; m.className='notice error'; m.classList.remove('hidden');
 }
 
 function logout(){
@@ -158,6 +140,7 @@ function logout(){
  $('logoutBtn').classList.add('hidden');
  $('loginView').classList.remove('hidden');
  $('loginUser').value=''; $('loginPass').value='';
+ if($('loginMsg')) $('loginMsg').classList.add('hidden');
  currentEmp = null;
 }
 
@@ -171,52 +154,41 @@ function showTab(name,btn){
 function openEmpModal(){ $('newEmpName').value=''; $('newEmpUser').value=''; $('newEmpCode').value=''; $('empModal').classList.remove('hidden'); }
 function closeEmpModal(){ $('empModal').classList.add('hidden'); }
 
-async function saveEmployee(){
+function saveEmployee(){
  const name = $('newEmpName').value.trim();
  const username = $('newEmpUser').value.trim();
  const code = $('newEmpCode').value.trim();
  if(!name || !username || !code){ alert('الرجاء تعبئة جميع الحقول'); return; }
- 
- const r = await api('addEmployee', {name, username, code});
- if(r.status === 'success'){
-  closeEmpModal();
-  await loadDataFromCloud();
-  renderAdminData();
- } else {
-  alert('خطأ أثناء الحفظ');
- }
+ employees.push({name, username, code});
+ localStorage.setItem('basma_emps', JSON.stringify(employees));
+ closeEmpModal();
+ renderAdminData();
 }
 
-async function deleteEmp(username){
+function deleteEmp(index){
  if(confirm('هل أنت متأكد من حذف الموظف؟')){
-  const r = await api('deleteEmployee', {username});
-  if(r.status === 'success'){
-   await loadDataFromCloud();
-   renderAdminData();
-  }
+  employees.splice(index, 1);
+  localStorage.setItem('basma_emps', JSON.stringify(employees));
+  renderAdminData();
  }
 }
 
-async function doPunch(type){
+function doPunch(type){
  const now = new Date();
  const dateStr = now.toLocaleDateString('en-CA');
  const timeStr = now.toLocaleTimeString('en-GB');
+ logs.unshift({name: currentEmp.name, type, date: dateStr, time: timeStr});
+ localStorage.setItem('basma_logs', JSON.stringify(logs));
  
- const r = await api('punch', {name: currentEmp.name, type, date: dateStr, time: timeStr});
  const msgEl = $('empMsg');
- if(r.status === 'success'){
-  msgEl.textContent = 'تم تسجيل (' + type + ') بنجاح في تمام الساعة ' + timeStr;
-  msgEl.className = 'notice success';
- } else {
-  msgEl.textContent = 'حدث خطأ أثناء تسجيل البصمة';
-  msgEl.className = 'notice error';
- }
+ msgEl.textContent = 'تم تسجيل (' + type + ') بنجاح في تمام الساعة ' + timeStr;
+ msgEl.className = 'notice success';
  msgEl.classList.remove('hidden');
 }
 
 function renderAdminData(){
  $('statTotal').textContent = employees.length;
- $('employeeRows').innerHTML = employees.length ? employees.map((e)=>`<tr><td>${e.name}</td><td>${e.username}</td><td>****</td><td><button class="btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteEmp('${e.username}')">حذف</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد موظفين مضافين</td></tr>';
+ $('employeeRows').innerHTML = employees.length ? employees.map((e,i)=>`<tr><td>${e.name}</td><td>${e.username}</td><td>****</td><td><button class="btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteEmp(${i})">حذف</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد موظفين مضافين</td></tr>';
  
  const today = new Date().toLocaleDateString('en-CA');
  const todayLogs = logs.filter(l => l.date === today);
