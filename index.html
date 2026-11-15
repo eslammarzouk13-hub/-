@@ -1,219 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#b8aa96"><title>بصمة | الحضور والانصراف</title>
-<style>
-:root{--sand:#c9bba7;--paper:#f7f4ef;--ink:#393936;--muted:#77736d;--line:#ddd5ca;--green:#387b59;--red:#a84f49;--shadow:0 12px 35px #4b403018}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#eee8df,#d7d1c8);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;min-height:100vh}
-button,input,select{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
-header{position:sticky;top:0;z-index:5;background:#d4c8b8ed;backdrop-filter:blur(12px);border-bottom:1px solid #ffffff70}
-.top{max-width:1200px;margin:auto;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{display:flex;align-items:center;gap:10px}.logo{width:46px;height:46px;border-radius:15px;background:#f8f4ed;display:grid;place-items:center;font-size:25px;box-shadow:var(--shadow)}.brand h1{font-size:22px;margin:0}
-.status{font-size:12px;color:#555;background:#f6f2ec;padding:8px 11px;border-radius:99px}
-main{max-width:1200px;margin:24px auto;padding:0 16px 50px}.panel{background:#faf8f4;border:1px solid #fff;border-radius:22px;padding:20px;box-shadow:var(--shadow);margin-bottom:18px}
-h2{margin:0 0 15px;font-size:21px}h3{margin:0 0 12px;font-size:17px}.muted{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.stat{background:linear-gradient(145deg,#eee8df,#fff);border:1px solid var(--line);border-radius:17px;padding:16px}.stat b{font-size:27px;display:block}.stat span{font-size:13px;color:var(--muted)}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}
-input{width:100%;border:1px solid #d7cfc4;background:white;border-radius:12px;padding:12px;color:var(--ink);outline:none}
-.btn{padding:11px 16px;border-radius:12px;background:#625f59;color:#fff;font-weight:650}.btn.primary{background:#8f7e68}.btn.light{background:#e8e1d7;color:#46433e}.btn.danger{background:#a84f49}.btn.green{background:#387b59}
-.tabs{display:flex;gap:8px;overflow:auto;margin:0 0 16px}.tab{white-space:nowrap;padding:10px 14px;border-radius:12px;background:#e8e1d7;color:#504b44}.tab.active{background:#625f59;color:white}
-table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:11px 9px;border-bottom:1px solid #e7e0d7;text-align:right;font-size:13px}th{color:#6e675e;background:#f2eee8}
-.tablewrap{overflow:auto;border:1px solid #e7e0d7;border-radius:14px}
-.login{max-width:440px;margin:8vh auto}.login .panel{padding:26px}.login .brand{justify-content:center;margin-bottom:20px}
-.notice{padding:12px 14px;border-radius:12px;background:#f0e9df;color:#62584c;font-size:13px;margin:10px 0}.error{background:#f7e5e2;color:#8c3d36}.success{background:#e1eee5;color:#2e6545}
-.modalback{position:fixed;inset:0;background:#1e1e1ecc;z-index:20;display:grid;place-items:center;padding:15px}
-.modal{width:min(560px,100%);background:#faf8f4;border-radius:20px;padding:20px}
-footer{text-align:center;color:#756f67;font-size:12px;padding:18px}
-@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام بصمة الحضور والانصراف</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, sans-serif; }
+        body { background: #f4f7f6; color: #333; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; margin-bottom: 20px; color: #007bff; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { width: 100%; background: #007bff; color: white; border: none; padding: 12px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #0056b3; }
+        .msg { text-align: center; margin-top: 15px; font-weight: bold; }
+    </style>
 </head>
 <body>
-<header>
- <div class="top">
-  <div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>نظام الحضور والانصراف</small></div></div>
-  <div class="row"><span id="connection" class="status">متصل</span><button id="logoutBtn" class="btn light hidden" onclick="logout()">خروج</button></div>
- </div>
-</header>
-<main>
- <section id="loginView" class="login">
-  <div class="panel">
-   <div class="brand"><div class="logo">👷‍♂️</div><div><h1>بصمة</h1><small>تسجيل الدخول</small></div></div>
-   <div class="field" style="margin-bottom:12px"><label>اسم المستخدم</label><input id="loginUser" placeholder="أدخل اسم المستخدم"></div>
-   <div class="field" style="margin-bottom:12px"><label>كلمة المرور / كود الدخول</label><input id="loginPass" type="password" placeholder="أدخل كود الدخول"></div>
-   <button class="btn primary" style="width:100%" onclick="login()">دخول النظام</button>
-   <div id="loginMsg" class="notice hidden"></div>
-  </div>
- </section>
 
- <section id="adminView" class="hidden">
-  <div class="row between" style="margin:0 2px 15px">
-   <div><h2>مرحباً المشرف العام</h2><div class="muted">لوحة الإدارة الرئيسية</div></div>
-   <span class="pill" style="background:#dcebe1;color:#286344;padding:6px 12px;border-radius:99px">مشرف النظام</span>
-  </div>
-  <div class="grid">
-   <div class="stat"><b id="statTotal">0</b><span>إجمالي الموظفين</span></div>
-   <div class="stat"><b id="statPresent">0</b><span>الحضور اليوم</span></div>
-   <div class="stat"><b id="statLeft">0</b><span>المنصرفون</span></div>
-   <div class="stat"><b>1</b><span>المتصلون الآن</span></div>
-  </div>
-  <div class="panel" style="margin-top:18px">
-   <div class="tabs">
-    <button class="tab active" data-tab="overview" onclick="showTab('overview',this)">نظرة عامة</button>
-    <button class="tab" data-tab="employees" onclick="showTab('employees',this)">الموظفون</button>
-    <button class="tab" data-tab="logs" onclick="showTab('logs',this)">سجل البصمات</button>
-   </div>
-   <div id="tab-overview">
-    <h3>حركة اليوم</h3>
-    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>الحضور</th><th>الانصراف</th><th>الحالة</th></tr></thead><tbody id="todayRows"><tr><td colspan="4">لا توجد بيانات حركة اليوم</td></tr></tbody></table></div>
-   </div>
-   <div id="tab-employees" class="hidden">
-    <div class="row between"><h3>بيانات الموظفين</h3><button class="btn primary" onclick="openEmpModal()">+ إضافة موظف</button></div>
-    <div class="tablewrap" style="margin-top:10px"><table><thead><tr><th>الاسم</th><th>اسم المستخدم</th><th>الكود</th><th>إجراءات</th></tr></thead><tbody id="employeeRows"><tr><td colspan="4">لا توجد موظفين مضافين</td></tr></tbody></table></div>
-   </div>
-   <div id="tab-logs" class="hidden">
-    <h3>سجل البصمات المباشر</h3>
-    <div class="tablewrap"><table><thead><tr><th>الموظف</th><th>النوع</th><th>التاريخ</th><th>الساعة</th></tr></thead><tbody id="logRows"><tr><td colspan="4">لا توجد بصمات مسجلة</td></tr></tbody></table></div>
-   </div>
-  </div>
- </section>
+<div class="container">
+    <h2>نظام بصمة</h2>
+    
+    <div class="form-group">
+        <label>اختر الموظف:</label>
+        <select id="employeeSelect">
+            <option value="">جاري تحميل الموظفين...</option>
+        </select>
+    </div>
 
- <section id="employeeView" class="hidden">
-  <div class="panel" style="max-width:500px;margin:5vh auto;text-align:center">
-   <h2 id="welcomeEmp">مرحباً بالمندوب</h2>
-   <div class="muted" style="margin-bottom:20px">سجل حضورك أو انصرافك بضغطة زر واحدة</div>
-   <div class="row" style="justify-content:center;gap:15px">
-    <button class="btn green" style="padding:15px 30px;font-size:16px" onclick="doPunch('حضور')">تسجيل الحضور</button>
-    <button class="btn danger" style="padding:15px 30px;font-size:16px" onclick="doPunch('انصراف')">تسجيل الانصراف</button>
-   </div>
-   <div id="empMsg" class="notice hidden" style="margin-top:20px"></div>
-  </div>
- </section>
-</main>
+    <div class="form-group">
+        <label>نوع الحركة:</label>
+        <select id="punchType">
+            <option value="حضور">حضور</option>
+            <option value="انصراف">انصراف</option>
+        </select>
+    </div>
 
-<div id="empModal" class="modalback hidden">
- <div class="modal">
-  <h2>إضافة موظف / مندوب جديد</h2>
-  <div class="field" style="margin-bottom:10px"><label>اسم الموظف</label><input id="newEmpName" placeholder="الاسم الكامل"></div>
-  <div class="field" style="margin-bottom:10px"><label>اسم المستخدم (للدخول)</label><input id="newEmpUser" placeholder="مثال: ali"></div>
-  <div class="field" style="margin-bottom:15px"><label>كود الدخول (كلمة المرور)</label><input id="newEmpCode" placeholder="مثال: 4321"></div>
-  <div class="row"><button class="btn primary" onclick="saveEmployee()">حفظ الموظف</button><button class="btn light" onclick="closeEmpModal()">إلغاء</button></div>
- </div>
+    <button onclick="submitPunch()">تسجيل البصمة</button>
+    <div class="msg" id="msg"></div>
 </div>
 
-<footer>بصمة 👷‍♂️ — نظام الحضور والانصراف</footer>
 <script>
-const $ = id => document.getElementById(id);
-let employees = JSON.parse(localStorage.getItem('basma_emps') || '[]');
-let logs = JSON.parse(localStorage.getItem('basma_logs') || '[]');
-let currentEmp = null;
+    // رابط السكريبت الخاص بك المربوط بقاعدة البيانات
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyAThk-3P7ymKvEwDJ-6GL7gzxTzLQV0KSvrmbRGiOipzFMTr2dij8kb88upo-9tMcl/exec';
 
-function login(){
- const u=$('loginUser').value.trim(), p=$('loginPass').value.trim();
- const m = $('loginMsg');
- if(!u || !p){ m.textContent='الرجاء إدخال البيانات'; m.className='notice error'; m.classList.remove('hidden'); return; }
+    window.onload = function() {
+        loadEmployees();
+    };
 
- if(u==='admin' && p==='123456'){
-  $('loginView').classList.add('hidden');
-  $('adminView').classList.remove('hidden');
-  $('logoutBtn').classList.remove('hidden');
-  renderAdminData();
-  return;
- }
+    function loadEmployees() {
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "syncAll" })
+        })
+        .then(res => res.json())
+        .then(data => {
+            let select = document.getElementById('employeeSelect');
+            select.innerHTML = '<option value="">اختر موظف...</option>';
+            if (data.employees && data.employees.length > 0) {
+                data.employees.forEach(emp => {
+                    let opt = document.createElement('option');
+                    opt.value = emp.name;
+                    opt.textContent = emp.name;
+                    select.appendChild(opt);
+                });
+            }
+        })
+        .catch(err => {
+            console.error("خطأ في التحميل", err);
+        });
+    }
 
- const emp = employees.find(e => e.username === u && e.code === p);
- if(emp){
-  currentEmp = emp;
-  $('loginView').classList.add('hidden');
-  $('employeeView').classList.remove('hidden');
-  $('logoutBtn').classList.remove('hidden');
-  $('welcomeEmp').textContent = 'مرحباً بالزميل: ' + emp.name;
-  return;
- }
+    function submitPunch() {
+        let name = document.getElementById('employeeSelect').value;
+        let type = document.getElementById('punchType').value;
+        let msg = document.getElementById('msg');
 
- m.textContent='خطأ في اسم المستخدم أو كلمة المرور'; m.className='notice error'; m.classList.remove('hidden');
-}
+        if (!name) {
+            msg.style.color = "red";
+            msg.textContent = "الرجاء اختيار الموظف!";
+            return;
+        }
 
-function logout(){
- $('adminView').classList.add('hidden');
- $('employeeView').classList.add('hidden');
- $('logoutBtn').classList.add('hidden');
- $('loginView').classList.remove('hidden');
- $('loginUser').value=''; $('loginPass').value='';
- if($('loginMsg')) $('loginMsg').classList.add('hidden');
- currentEmp = null;
-}
+        let now = new Date();
+        let date = now.toISOString().split('T')[0];
+        let time = now.toLocaleTimeString();
 
-function showTab(name,btn){
- document.querySelectorAll('[id^="tab-"]').forEach(x=>x.classList.add('hidden'));
- $('tab-'+name).classList.remove('hidden');
- document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
- btn.classList.add('active');
-}
+        msg.style.color = "blue";
+        msg.textContent = "جاري الحفظ...";
 
-function openEmpModal(){ $('newEmpName').value=''; $('newEmpUser').value=''; $('newEmpCode').value=''; $('empModal').classList.remove('hidden'); }
-function closeEmpModal(){ $('empModal').classList.add('hidden'); }
-
-function saveEmployee(){
- const name = $('newEmpName').value.trim();
- const username = $('newEmpUser').value.trim();
- const code = $('newEmpCode').value.trim();
- if(!name || !username || !code){ alert('الرجاء تعبئة جميع الحقول'); return; }
- employees.push({name, username, code});
- localStorage.setItem('basma_emps', JSON.stringify(employees));
- closeEmpModal();
- renderAdminData();
-}
-
-function deleteEmp(index){
- if(confirm('هل أنت متأكد من حذف الموظف؟')){
-  employees.splice(index, 1);
-  localStorage.setItem('basma_emps', JSON.stringify(employees));
-  renderAdminData();
- }
-}
-
-function doPunch(type){
- const now = new Date();
- const dateStr = now.toLocaleDateString('en-CA');
- const timeStr = now.toLocaleTimeString('en-GB');
- logs.unshift({name: currentEmp.name, type, date: dateStr, time: timeStr});
- localStorage.setItem('basma_logs', JSON.stringify(logs));
- 
- const msgEl = $('empMsg');
- msgEl.textContent = 'تم تسجيل (' + type + ') بنجاح في تمام الساعة ' + timeStr;
- msgEl.className = 'notice success';
- msgEl.classList.remove('hidden');
-}
-
-function renderAdminData(){
- $('statTotal').textContent = employees.length;
- $('employeeRows').innerHTML = employees.length ? employees.map((e,i)=>`<tr><td>${e.name}</td><td>${e.username}</td><td>****</td><td><button class="btn danger" style="padding:5px 10px;font-size:11px" onclick="deleteEmp(${i})">حذف</button></td></tr>`).join('') : '<tr><td colspan="4">لا توجد موظفين مضافين</td></tr>';
- 
- const today = new Date().toLocaleDateString('en-CA');
- const todayLogs = logs.filter(l => l.date === today);
- $('statPresent').textContent = new Set(todayLogs.filter(l=>l.type==='حضور').map(l=>l.name)).size;
- $('statLeft').textContent = new Set(todayLogs.filter(l=>l.type==='انصراف').map(l=>l.name)).size;
-
- $('logRows').innerHTML = logs.length ? logs.map(l=>`<tr><td>${l.name}</td><td>${l.type}</td><td>${l.date}</td><td>${l.time}</td></tr>`).join('') : '<tr><td colspan="4">لا توجد بصمات مسجلة</td></tr>';
- 
- const byEmp = {};
- todayLogs.forEach(l => {
-  byEmp[l.name] = byEmp[l.name] || {in:'—', out:'—'};
-  if(l.type==='حضور') byEmp[l.name].in = l.time;
-  if(l.type==='انصراف') byEmp[l.name].out = l.time;
- });
- 
- $('todayRows').innerHTML = employees.length ? employees.map(e => {
-  const st = byEmp[e.name];
-  const hasIn = st && st.in !== '—';
-  const hasOut = st && st.out !== '—';
-  let badge = '<span style="color:#777">غائب</span>';
-  if(hasIn && !hasOut) badge = '<span style="color:var(--green);font-weight:bold">حاضر الآن</span>';
-  else if(hasOut) badge = '<span style="color:var(--muted)">انصرف</span>';
-  return `<tr><td>${e.name}</td><td>${st?st.in:'—'}</td><td>${st?st.out:'—'}</td><td>${badge}</td></tr>`;
- }).join('') : '<tr><td colspan="4">لا توجد بيانات موظفين</td></tr>';
-}
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: "punch", name: name, type: type, date: date, time: time })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                msg.style.color = "green";
+                msg.textContent = "تم تسجيل البصمة بنجاح!";
+            } else {
+                msg.style.color = "red";
+                msg.textContent = "حدث خطأ أثناء الحفظ.";
+            }
+        })
+        .catch(err => {
+            msg.style.color = "red";
+            msg.textContent = "خطأ في الاتصال بالشبكة.";
+        });
+    }
 </script>
+
 </body>
 </html>
